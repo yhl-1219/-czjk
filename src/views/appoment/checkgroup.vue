@@ -251,7 +251,7 @@ export default {
             methods: {
                 findPage() {
                     this.$http.post("api/checkgroup/findPage",this.pagination).then((res)=>{
-                        if(res.data.message){
+                        if(res.data.flag){
                             this.dataList = res.data.data.rows;
                             this.pagination.total = res.data.data.total;
                         }
@@ -279,11 +279,12 @@ export default {
                 handleAdd() {
                     this.$refs['dataAddForm'].validate((valid) => {
                         if (valid) {
+                            this.formData.checkitemIds = this.checkitemIds;
                             this.$http.post("api/checkgroup/add",this.formData).then(res => {
                                 this.dialogFormVisible = false;
                                 if(res.data.flag) {
                                     this.dialogFormVisible = false;
-                                    this.findPage;
+                                    this.findPage();
                                 } else {
                                     this.$message.error(res.data.message);
                                 }
@@ -295,6 +296,15 @@ export default {
                             })
                         }
                     });
+                },
+                //查询分页
+                findPageByCondition() {
+                    this.findPage();
+                },
+                //切换页面
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage=currentPage;
+                    this.findPage();
                 },
                 //准备删除
                 handleDelete(row) {
