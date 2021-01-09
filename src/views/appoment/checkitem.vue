@@ -220,16 +220,99 @@ export default {
                     this.findPage()
             },
             methods:{            
+                        //查询分页
                         findPage(){
-                            this.$http.get("api/checkitem/findAll").then((res)=>{
+                            this.$http.post("api/checkitem/findPage",this.pagination).then((res)=>{
+                                 console.info(res);
                                  if(res.data.flag){
-                                     alert(JSON.stringify(res.data.data))
-                                 }else{
-                                     this.$message.error(res.data.message)
+                                     this.dataList = res.data.data.rows;
+                                     this.pagination.total = res.data.data.total;
+                                 } else {
+                                     this.$message.error(res.data.message);
                                  }
+                            })
+                        },
+                        //清理表单
+                        restform() {
+                            this.formData = {};
+                        },
+                        //添加弹窗
+                        handleCreate() {
+                            this.restform();
+                            this.dialogFormVisible = true;
+                        },
+                        //添加
+                        handleAdd() {
+                            this.$refs['dataAddForm'].validate((valid) => {
+                                if(valid) {
+                                    this.$http.post("api/checkitem/add",this.formData).then(res => {
+                                        this.dialogFormVisible = false;
+                                        if(res.data.flag){
+                                            this.$message.success("新增成功");
+                                        } else {
+                                            this.$message.error("新增失败");
+                                        }
+                                    })
+                                } else {
+                                    this.$message({
+                                        type: "error",
+                                        message: "表单数据校验失败"
+                                    })
+                                }
+                            })
+                        },
+                        //翻页
+                        handleCurrentChange(currentPage) {
+                            this.pagination.currentPage = currentPage;
+                            this.findPage();
+                        },
+                        //分页
+                        findPageByCondition() {
+                            this.findPage();
+                        },
+                        //删除
+                        handleDelete(row){
+                            this.$confirm('您确定要删除吗？','提示',{
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                this.$http.delete("api/checkitem/deleteCheckItemById/" + row.id).then((res)=>{
+                                    if(res.data.flag){
+                                        this.pagination.currentPage=1;
+                                        this.findPage();
+                                    } else {
+                                        this.$message.error(res.data.message);
+                                    }
+                                }).catch(()=>{
+                                    this.message({
+                                        type: 'info',
+                                        message: '已取消删除'
+                                    });
+                                });
+                            });
+                        },
+                        //修改弹窗
+                        handleUpdate(row){
+                            this.formData = row;
+                            this.dialogFormVisible4Edit = true;
+                        },
+                        //修改确定
+                        handleEdit(){
+                            this.$refs['dataEditForm'].validate( valid => {
+                                if(valid) {
+                                    this.$http.post("api/checkitem/add",this.formData).then(res=>{
+                                        if(res.data.flag){
+                                            this.dialogFormVisible4Edit = false;
+                                        } else {
+                                            this.$message.error(res.data.message);
+                                        }
+                                    })
+                                } else {
+                                    this.$message.error('表单数据非法');
+                                }
                             })
                         }
             }
-  
 };
 </script>

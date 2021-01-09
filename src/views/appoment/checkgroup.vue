@@ -222,8 +222,8 @@ export default {
                 activeName:'first',//添加/编辑窗口Tab标签名称
                 pagination: {//分页相关属性
                     currentPage: 1,
-                    pageSize:10,
-                    total:100,
+                    pageSize:5,
+                    total:0,
                     queryString:null,
                 },
                 dataList: [],//列表数据
@@ -246,11 +246,60 @@ export default {
   },
 
   created() {    
-    
-                
+                this.findPage();
             },
             methods: {
-               
+                findPage() {
+                    this.$http.post("api/checkgroup/findPage",this.pagination).then((res)=>{
+                        if(res.data.message){
+                            this.dataList = res.data.data.rows;
+                            this.pagination.total = res.data.data.total;
+                        }
+                    })
+                },
+                //弹出添加窗口
+                handleCreate() {
+                    this.checkitemIds = [];
+                    this.restform();
+                    this.dialogFormVisible = true;
+                    this.activeName='first';
+                    this.$http.get("api/checkitem/findAll").then(res=>{
+                        if(res.data.flag) {
+                            this.tableData = res.data.data;
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    })
+                },
+                //重置表单
+                restform() {
+                    this.formData = {};
+                },
+                //添加
+                handleAdd() {
+                    this.$refs['dataAddForm'].validate((valid) => {
+                        if (valid) {
+                            this.$http.post("api/checkgroup/add",this.formData).then(res => {
+                                this.dialogFormVisible = false;
+                                if(res.data.flag) {
+                                    this.dialogFormVisible = false;
+                                    this.findPage;
+                                } else {
+                                    this.$message.error(res.data.message);
+                                }
+                            })
+                        } else {
+                            this.$message({
+                                type: "error",
+                                message: "表单数据校验失败"
+                            })
+                        }
+                    });
+                },
+                //准备删除
+                handleDelete(row) {
+                    
+                }
             }
         
 
