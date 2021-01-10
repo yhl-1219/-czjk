@@ -268,6 +268,7 @@ export default {
                         },
                         //分页
                         findPageByCondition() {
+                            this.pagination.currentPage = 1;
                             this.findPage();
                         },
                         //删除

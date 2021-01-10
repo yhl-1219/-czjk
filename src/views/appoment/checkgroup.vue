@@ -299,6 +299,7 @@ export default {
                 },
                 //查询分页
                 findPageByCondition() {
+                    this.pagination.currentPage = 1;
                     this.findPage();
                 },
                 //切换页面

@@ -322,6 +322,7 @@ export default {
                         })
                     },
                     findPageByCondition() {
+                        this.pagination.currentPage = 1;
                         this.findPage();
                     },
                     handleCurrentChange(currentPage) {
