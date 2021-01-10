@@ -190,7 +190,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr v-for="c in tableData">
+													<tr v-for="c in tableData" v-bind:key="c">
 														<td>
 															<input :id="c.id" v-model="checkitemIds" type="checkbox" :value="c.id">
 														</td>
@@ -306,9 +306,68 @@ export default {
                     this.pagination.currentPage=currentPage;
                     this.findPage();
                 },
-                //准备删除
+                //删除
                 handleDelete(row) {
-                    
+                    this.$confirm('您确定要删除吗？','提示',{
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                this.$http.delete("api/checkgroup/deleteCheckGroupById/" + row.id).then((res)=>{
+                                    if(res.data.flag) {
+                                        this.pagination.currentPage=1;
+                                        this.findPage();
+                                    } else {
+                                        this.$message.error(res.data.message);
+                                    }
+                                }).catch(()=>{
+                                    this.message({
+                                        type: 'info',
+                                        message: '已取消删除'
+                                    })
+                                })
+                            });
+                },
+                //编辑检查组
+                handleUpdate(row){
+                    this.formData = row;
+                    this.dialogFormVisible4Edit = true;
+                    this.activeName = "first";
+                    this.$http.get("api/checkitem/findAll").then(res=>{
+                        if(res.data.flag) {
+                            this.tableData = res.data.data;
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    });
+                    this.$http.get("api/checkgroup/findCheckItemInfoByGroupId/" + row.id).then(res=>{
+                        if(res.data.flag){
+                            this.checkitemIds = res.data.data.checkItemIds;
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    });
+                },
+                //修改提交
+                handleEdit() {
+                    this.$refs['dataAddForm'].validate((valid) => {
+                        if (valid) {
+                            this.dialogFormVisible4Edit = false;
+                            this.formData.checkitemIds = this.checkitemIds;
+                            this.$http.post("api/checkgroup/add",this.formData).then(res => {
+                                if(res.data.flag) {
+                                    this.findPage();
+                                } else {
+                                    this.$message.error(res.data.message);
+                                }
+                            })
+                        } else {
+                            this.$message({
+                                type: "error",
+                                message: "表单数据校验失败"
+                            })
+                        }
+                    });
                 }
             }
         

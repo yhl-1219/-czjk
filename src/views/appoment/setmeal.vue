@@ -29,8 +29,8 @@
                         <el-table-column prop="remark" label="说明" align="center"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
-                                <el-button type="primary" size="mini">编辑</el-button>
-                                <el-button size="mini" type="danger">删除</el-button>
+                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -96,7 +96,7 @@
                                                     <el-form-item label="上传图片">
                                                         <el-upload
                                                                 class="avatar-uploader"
-                                                                action="/setmeal/upload.do"
+                                                                action="api/setmeal/upload"
                                                                 :auto-upload="autoUpload"
                                                                 name="imgFile"
                                                                 :show-file-list="false"
@@ -156,6 +156,118 @@
                             </div>
                         </el-dialog>
                     </div>
+                    <!-- 修改标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="编辑套餐" :visible.sync="dialogFormVisible4Edit">
+                            <template>
+                                <el-tabs v-model="activeName" type="card">
+                                    <el-tab-pane label="基本信息" name="first">
+                                        <el-form label-position="right" label-width="100px" :model="formData" ref="editSetMealForm"  :rules="rules">
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="套餐编码" prop="code">
+                                                        <el-input v-model="formData.code"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="套餐名称" prop="name">
+                                                        <el-input v-model="formData.name"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="适用性别">
+                                                        <el-select v-model="formData.sex">
+                                                            <el-option label="不限" value="0"></el-option>
+                                                            <el-option label="男" value="1"></el-option>
+                                                            <el-option label="女" value="2"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="助记码">
+                                                        <el-input v-model="formData.helpCode"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="套餐价格">
+                                                        <el-input v-model="formData.price"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="适用年龄" prop="age">
+                                                        <el-input v-model.number="formData.age"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="上传图片">
+                                                        <el-upload
+                                                                class="avatar-uploader"
+                                                                action="api/setmeal/upload"
+                                                                :auto-upload="autoUpload"
+                                                                name="imgFile"
+                                                                :show-file-list="false"
+                                                                :on-success="handleAvatarSuccess"
+                                                                :before-upload="beforeAvatarUpload">
+                                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                        </el-upload>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="说明">
+                                                        <el-input v-model="formData.remark" type="textarea"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="注意事项">
+                                                        <el-input v-model="formData.attention" type="textarea"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                        </el-form>
+                                    </el-tab-pane>
+                                    <el-tab-pane label="检查组信息" name="second">
+										<div class="checkScrol">
+											<table class="datatable">
+												<thead>
+												<tr>
+													<th>选择</th>
+													<th>项目编码</th>
+													<th>项目名称</th>
+													<th>项目说明</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr v-for="c in tableData">
+													<td>
+														<input :id="c.id" v-model="checkgroupIds" type="checkbox" :value="c.id">
+													</td>
+													<td><label :for="c.id">{{c.code}}</label></td>
+													<td><label :for="c.id">{{c.name}}</label></td>
+													<td><label :for="c.id">{{c.remark}}</label></td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+                                    </el-tab-pane>
+                                </el-tabs>
+                            </template>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
                 </div>
             </div>
   </div>
@@ -170,8 +282,8 @@ export default {
                 activeName:'first',//添加/编辑窗口Tab标签名称
                 pagination: {//分页相关属性
                     currentPage: 1,
-                    pageSize:10,
-                    total:100,
+                    pageSize:5,
+                    total:0,
                     queryString:null,
                 },
                 dataList: [],//列表数据
@@ -195,11 +307,107 @@ export default {
                 }
         }
     },
-    created(){},
-    methods(){
-
+      created() {
+                    this.findPage();
+                },
+                methods: {
+                    findPage(){
+                        this.$http.post("api/setmeal/findPage",this.pagination).then(res=>{
+                            if (res.data.flag) {
+                                this.dataList = res.data.data.rows;
+                                this.pagination.total = res.data.data.total;
+                            } else {
+                                this.$message.error(res.data.message);
+                            }
+                        })
+                    },
+                    findPageByCondition() {
+                        this.findPage();
+                    },
+                    handleCurrentChange(currentPage) {
+                        this.pagination.currentPage=currentPage;
+                        this.findPage();
+                    },
+                    handleCreate() {
+                        this.formData = {};
+                        this.checkgroupIds = [];
+                        this.imageUrl = null;
+                        this.$http.get("api/checkgroup/findAll").then(res=>{
+                            if(res.data.flag){
+                                this.tableData = res.data.data;
+                            } else {
+                                this.$message.error(res.data.message);
+                            }
+                        });
+                        this.dialogFormVisible = true;
+                        this.activeName = "first";
+                    },
+                    handleAdd(){
+                        this.$refs['addSetMealForm'].validate(valid => {
+                            if(valid) {
+                                this.dialogFormVisible = false;
+                                this.formData.checkgroupIds = this.checkgroupIds;
+                                this.$http.post("api/setmeal/add",this.formData).then(res=>{
+                                    if(res.data.flag) {
+                                        this.findPage();
+                                    } else {
+                                        this.$message.error(res.data.message);
+                                    }
+                                })
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: '表单数据校验失败'
+                                })
+                            }
+                        })
+                    },
+                    handleDelete(row) {
+                        this.$http.delete("api/setmeal/deleteSetmealById/" + row.id).then(res=>{
+                            if(res.data.flag) {
+                                this.pagination.currentPage=1;
+                                this.findPage();
+                            } else {
+                                this.$message.error(res.data.message);
+                            }
+                        });
+                    },
+                    handleUpdate(row) {
+                        this.formData = row;
+                        this.imageUrl = "https://vectorwang.oss-cn-shanghai.aliyuncs.com/" + row.img;
+                        this.$http.get("api/checkgroup/findAll").then(res=>{
+                            if(res.data.flag){
+                                this.tableData = res.data.data;
+                            } else {
+                                this.$message.error(res.data.message);
+                            }
+                        });
+                        this.$http.post("api/setmeal/findGroupIdsBySetmealId/" + row.id).then(res =>{
+                            this.checkgroupIds = res.data.data;
+                        });
+                        this.dialogFormVisible4Edit = true;
+                        this.activeName = 'first';
+                    },
+                    handleEdit() {
+                        this.dialogFormVisible4Edit = false;
+                        this.formData.checkgroupIds = this.checkgroupIds;
+                        this.$http.post("api/setmeal/add",this.formData).then(res=>{
+                            if(res.data.flag) {
+                                this.findPage();
+                            } else {
+                                this.$message.error(res.data.message);
+                            }
+                        })
+                    },
+                    handleAvatarSuccess(response,file) {
+                        this.imageUrl = "https://vectorwang.oss-cn-shanghai.aliyuncs.com/" +  response.data;
+                        this.$message({
+                            message: response.flag ? '图片上传成功' : '图片上传失败',
+                            type: response.flag ? 'success' : 'error'
+                        });
+                        this.formData.img = response.data;
+                    }
     }
-
 }
 </script>
 
