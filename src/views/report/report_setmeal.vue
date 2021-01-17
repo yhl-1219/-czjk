@@ -22,48 +22,57 @@
 <script>
 export default {
   data() {
-    return {};
-  },
-  mounted: function () {
-    var myChart1 = this.$echarts.init(document.getElementById("chart1"));
-    myChart1.setOption({
-      title: {
-        text: "套餐预约占比",
-        subtext: "",
-        x: "center",
-      },
-      tooltip: {
-        //提示框组件
-        trigger: "item", //触发类型，在饼形图中为item
-        formatter: "{a} <br/>{b} : {c} ({d}%)", //提示内容格式
-      },
-      legend: {
-        orient: "vertical",
-        left: "left",
-      },
-      series: [
-        {
-          name: "套餐预约占比",
-          type: "pie",
-          radius: "55%",
-          center: ["50%", "60%"],
-          data: [
+    return {
+      data:[
             { value: 335, name: "直接访问" },
             { value: 310, name: "邮件营销" },
             { value: 234, name: "联盟广告" },
             { value: 135, name: "视频广告" },
             { value: 1548, name: "搜索引擎" },
-          ],
-          itemStyle: {
-            emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)",
-            },
+          ]
+    };
+  },
+  mounted: function () {
+    var myChart1 = this.$echarts.init(document.getElementById("chart1"));
+    this.$http.post("api/report/getSetmealCount").then(res=>{
+      if(res.data.flag){
+        this.data = res.data.data;
+        myChart1.setOption({
+          title: {
+            text: "套餐预约占比",
+            subtext: "",
+            x: "center",
           },
-        },
-      ],
-    });
+          tooltip: {
+            //提示框组件
+            trigger: "item", //触发类型，在饼形图中为item
+            formatter: "{a} <br/>{b} : {c} ({d}%)", //提示内容格式
+          },
+          legend: {
+            orient: "vertical",
+            left: "left",
+          },
+          series: [
+            {
+              name: "套餐预约占比",
+              type: "pie",
+              radius: "55%",
+              center: ["50%", "60%"],
+              data: this.data,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: "rgba(0, 0, 0, 0.5)",
+                },
+              },
+            },
+          ],
+        });
+      } else {
+        this.$message.error(res.data.message);
+      }
+    })
   },
 };
 </script>

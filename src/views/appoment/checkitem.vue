@@ -295,7 +295,8 @@ export default {
                         },
                         //修改弹窗
                         handleUpdate(row){
-                            this.formData = row;
+                            var jsonStr = JSON.stringify(row);
+                            this.formData = JSON.parse(jsonStr);
                             this.dialogFormVisible4Edit = true;
                         },
                         //修改确定

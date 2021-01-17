@@ -13,10 +13,10 @@
             <span class="help">
               <i class="fa fa-exclamation-circle" aria-hidden="true"></i>帮助
             </span>
+            {{username}}
             <el-dropdown class="avatar-container right-menu-item" trigger="click">
               <div class="avatar-wrapper">
                 <img src="../assets/img/user2-160x160.jpg" class="user-avatar" />
-                  {{username}}
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item divided>
@@ -65,9 +65,9 @@ export default {
     methods:{
          //  用户退出功能
         logout(){
-       //   window.sessionStorage.removeItem("username")
-       //   window.sessionStorage.removeItem("token")
-       //   this.$router.replace({ name: "/" });
+         window.sessionStorage.removeItem("username")
+         window.sessionStorage.removeItem("token")
+         this.$router.replace({ name: "/" });
         },
 
         goMenu:function(_name){
@@ -77,9 +77,10 @@ export default {
             this.$message.warning("暂未开通该功能");
         },
     },
-    created(){
+   created(){
         this.menuList = mList;
-        // this.username = window.sessionStorage.getItem("username")
+        //  当用户认证成功 直接从  sessionStorege对象中获取用户数据
+        this.username = window.sessionStorage.getItem("username")
     }
 }
 </script>

@@ -346,6 +346,9 @@ export default {
                     handleAdd(){
                         this.$refs['addSetMealForm'].validate(valid => {
                             if(valid) {
+                                if(this.imageUrl == null) {
+                                    this.$message.error('请上传一张照片');
+                                }
                                 this.dialogFormVisible = false;
                                 this.formData.checkgroupIds = this.checkgroupIds;
                                 this.$http.post("api/setmeal/add",this.formData).then(res=>{
@@ -374,7 +377,8 @@ export default {
                         });
                     },
                     handleUpdate(row) {
-                        this.formData = row;
+                        var jsonStr = JSON.stringify(row);
+                        this.formData = JSON.parse(jsonStr);
                         this.imageUrl = "https://vectorwang.oss-cn-shanghai.aliyuncs.com/" + row.img;
                         this.$http.get("api/checkgroup/findAll").then(res=>{
                             if(res.data.flag){

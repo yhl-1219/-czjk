@@ -331,7 +331,8 @@ export default {
                 },
                 //编辑检查组
                 handleUpdate(row){
-                    this.formData = row;
+                    var jsonStr = JSON.stringify(row);
+                    this.formData = JSON.parse(jsonStr);
                     this.dialogFormVisible4Edit = true;
                     this.activeName = "first";
                     this.$http.get("api/checkitem/findAll").then(res=>{
