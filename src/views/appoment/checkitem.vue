@@ -305,6 +305,7 @@ export default {
                                 if(valid) {
                                     this.$http.post("api/checkitem/add",this.formData).then(res=>{
                                         if(res.data.flag){
+                                            this.findPage();
                                             this.dialogFormVisible4Edit = false;
                                         } else {
                                             this.$message.error(res.data.message);
