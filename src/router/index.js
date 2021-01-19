@@ -52,8 +52,22 @@ const routes = [
         path: '/report_business',
         name: 'report_business',
         component: () => import('../views/report/report_business.vue')
+      },
+      {
+        path: '/system_menu',
+        name: 'system_menu',
+        component: () => import('../views/system/system_menu.vue')
+      },
+      {
+        path: '/system_role',
+        name: 'system_role',
+        component: () => import('../views/system/system_role.vue')
+      },
+      {
+        path: '/system_user',
+        name: 'system_user',
+        component: () => import('../views/system/system_user.vue')
       }
-
     ]
   }
 ]

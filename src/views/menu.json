@@ -92,5 +92,30 @@
                 "children": []
             }
         ]
+    },
+    {
+        "path": "6",
+        "title": "菜单管理",
+        "icon": "fa-heartbeat",
+        "children": []
+    },
+    {
+        "path": "7",
+        "title": "用户管理",
+        "icon": "fa-heartbeat",
+        "children": [
+            {
+                "path": "/7-1",
+                "title": "角色管理",
+                "linkUrl": "system_role",
+                "children": []
+            },
+            {
+                "path": "/7-2",
+                "title": "用户管理",
+                "linkUrl": "system_user",
+                "children": []
+            }
+        ]
     }
 ]
