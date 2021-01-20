@@ -7,18 +7,33 @@
                     <el-breadcrumb-item>统计分析</el-breadcrumb-item>
                     <el-breadcrumb-item>会员数量</el-breadcrumb-item>
                 </el-breadcrumb>
-                <el-form ref="form" :model="form">
-                        <el-form-item label="年份">
-                            <el-input v-model="year" style="width: 200px;"></el-input>
-                        </el-form-item>
-                        <el-form-item label="月份">
-                            <el-input v-model="t_month" style="width: 200px;"></el-input>
-                        </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="findCount">查询</el-button>
-                        <el-button>取消</el-button>
-                    </el-form-item>
-                </el-form>
+                
+                <div class="block">
+                    <span class="demonstration">筛选范围</span>
+                    <el-date-picker
+                    v-model="value2"
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd"
+                    type="datetimerange"
+                    :picker-options="pickerOptions"
+                    :default-time="['2020-01-01 00:00:00','2021-01-01 00:00:00']"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    @change="findCount"
+                    align="right">
+                    </el-date-picker>
+                    <span class="demonstration">筛选条件</span>
+                    <el-select @change="findCount" v-model="condition.type" placeholder="请选择">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </div>
+
             </div>
             <div class="app-container">
                 <div class="box">
@@ -33,58 +48,61 @@
 export default {
   data() {
     return {
-        year: 2020,
-        t_month: 1,
-        month: {
-            th1month: {
-                name: "2020-1",
-                member: 820
-            },
-            th2month: {
-                name: "2020-2",
-                member: 1320
-            },
-            th3month: {
-                name: "2020-3",
-                member: 932
-            },
-            th4month: {
-                name: "2020-4",
-                member: 901
-            },
-            th5month: {
-                name: "2020-5",
-                member: 1022
-            },
-            th6month: {
-                name: "2020-6",
-                member: 1111
-            },
-            th7month: {
-                name: "2020-7",
-                member: 1025
-            },
-            th8month: {
-                name: "2020-8",
-                member: 1078
-            },
-            th9month: {
-                name: "2020-9",
-                member: 1124
-            },
-            th10month: {
-                name: "2020-10",
-                member: 1209
-            },
-            th11month: {
-                name: "2020-11",
-                member: 1124
-            },
-            th12month: {
-                name: "2020-12",
-                member: 1502
-            },
-        }
+        options: [{
+          value: '0',
+          label: '按年显示'
+        }, {
+          value: '1',
+          label: '按月显示'
+        }, {
+          value: '2',
+          label: '按周显示'
+        }, {
+          value: '3',
+          label: '按日显示'
+        }],
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近半年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        value2: ['2020-01-01','2021-01-01'],
+        condition: {
+            beginTime: "2020-01-01",
+            endTime: "2020-12-12",
+            type: "1"
+        },
+        dataList: {}
     };
   },
         mounted(){
@@ -92,49 +110,29 @@ export default {
             },
         methods: {
             findCount() {
+                this.condition.beginTime = this.value2[0];
+                this.condition.endTime = this.value2[1];
                 var myChart = this.$echarts.init(document.getElementById("chart1"));
-                this.$http.post("api/report/getMemberCount/" + this.year + "/" + this.t_month).then(res=>{
+                this.$http.post("api/report/getMemberCount",this.condition).then(res=>{
                         if(res.data.flag){
-                            this.month = res.data.data;
+                            this.dataList = res.data.data;
                         myChart.setOption({
                             title:{
                                 text:'会员数量'
                             },
                             tooltip: {
                                 trigger: 'axis',
-                                formatter: [820, 932, 901, 934, 1290, 1330, 1320]
+                                formatter: this.dataList.member
                             },
                             xAxis: {
                                 type: 'category',
-                                data: [this.month.th1month.name
-                                ,this.month.th2month.name
-                                ,this.month.th3month.name
-                                ,this.month.th4month.name
-                                ,this.month.th5month.name
-                                ,this.month.th6month.name
-                                ,this.month.th7month.name
-                                ,this.month.th8month.name
-                                ,this.month.th9month.name
-                                ,this.month.th10month.name
-                                ,this.month.th11month.name
-                                ,this.month.th12month.name]
+                                data: this.dataList.name
                             },
                             yAxis: {
                                 type: 'value'
                             },
                             series: [{
-                                data: [this.month.th1month.member
-                                ,this.month.th2month.member
-                                ,this.month.th3month.member
-                                ,this.month.th4month.member
-                                ,this.month.th5month.member
-                                ,this.month.th6month.member
-                                ,this.month.th7month.member
-                                ,this.month.th8month.member
-                                ,this.month.th9month.member
-                                ,this.month.th10month.member
-                                ,this.month.th11month.member
-                                ,this.month.th12month.member],
+                                data: this.dataList.member,
                                 name:'会员数量',
                                 type: 'line'
                             }]

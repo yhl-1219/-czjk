@@ -1,10 +1,10 @@
 <template>
   <div>
         <div class="content-header">
-                <h1>用户管理<small>角色管理</small></h1>
+                <h1>系统管理<small>角色管理</small></h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>系统管理</el-breadcrumb-item>
                     <el-breadcrumb-item>角色管理</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
@@ -66,7 +66,7 @@
                                             </el-row>
                                         </el-form>
                                     </el-tab-pane>
-                                    <el-tab-pane label="检查项信息" name="second">
+                                    <el-tab-pane label="权限信息" name="second">
 									<div class="checkScrol">
                                         <table class="datatable">
                                             <thead>
@@ -129,7 +129,7 @@
                                             </el-row>
                                         </el-form>
                                     </el-tab-pane>
-                                    <el-tab-pane label="检查项信息" name="second">
+                                    <el-tab-pane label="权限信息" name="second">
 										<div class="checkScrol">
 											<table class="datatable">
 												<thead>
