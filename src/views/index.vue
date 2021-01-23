@@ -49,6 +49,7 @@
               <el-menu-item :index="child.path" :key="child.path">
                 <a @click="goMenu(child.linkUrl)" href="javascript:void(0);">{{child.name}}</a>
               </el-menu-item>
+              </el-menu-item>
             </template>
           </el-submenu>
         </el-menu>

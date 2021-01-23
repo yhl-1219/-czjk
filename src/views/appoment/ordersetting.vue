@@ -41,55 +41,41 @@
             </div>
           </el-card>
           <el-calendar v-model="curday">
-            <template slot="dateCell" slot-scope="{ date, data }">
+              <template
+              slot="dateCell"
+              slot-scope="{date, data}">
               <div v-if="settingData[data.day]">
-                <div
-                  v-if="
-                    settingData[data.day].number ==
-                    settingData[data.day].reservations
-                  "
-                  style="background-color: red; height: 100%"
-                >
-                  <div>
-                    <font color="blue">{{ data.day }}</font>
-                  </div>
-                  <div>
-                    {{ settingData[data.day].reservations }}/{{
-                      settingData[data.day].number
-                    }}
-                  </div>
-                  <div>已满</div>
+                <div v-if="settingData[data.day].number == settingData[data.day].reservations" 
+                  style="background-color:rgb(252,147,151);height:60px;padding:10px 0 0 0;">
+                 <div style="padding:6px 5px;"><font color='blue'>{{data.day}}</font></div>
+                  <div>{{settingData[data.day].reservations}}/{{settingData[data.day].number}}</div>
+                  <!-- <div>已满</div> -->
+                  <div><el-button type="primary" size="mini" style="padding:3px 5px;margin : 8px 2px 5px 110px;"
+                   @click="goSetting(data.day)">
+                   <!-- <i class="el-icon-setting" ></i> -->
+                   设置</el-button></div>
                 </div>
-                <div v-else style="background-color: lightblue; height: 100%">
-                  <div>
-                    <font color="blue">{{ data.day }}</font>
-                  </div>
-                  <div>
-                    {{ settingData[data.day].reservations }}/{{
-                      settingData[data.day].number
-                    }}
-                  </div>
-                  <div>
-                    <button @click="goSetting(data.day)">
-                      <i class="el-icon-setting"></i>设置
-                    </button>
-                  </div>
+                <div v-else style="background-color:rgb(43,219,254);height:80px;padding:0px 0 0 0;">
+                  <div style="padding:6px 5px;"><font color='blue'>{{data.day}}</font></div>
+                  <div>{{settingData[data.day].reservations}}/{{settingData[data.day].number}}</div>
+                  <div><el-button type="primary" size="mini" style="padding:3px 5px;margin : 0px 2px 5px 110px;"
+                   @click="goSetting(data.day)">
+                   <!-- <i class="el-icon-setting" ></i> -->
+                   设置</el-button></div>
                 </div>
               </div>
               <div v-else>
-                <div
-                  v-if="data.type == 'current-month'"
-                  style="padding-top: 25px"
-                >
-                  <font color="blue">{{ data.day }}</font>
-                  <button @click="goSetting(data.day)">
-                    <i class="el-icon-setting"></i>设置
-                  </button>
+                <div v-if="data.type == 'current-month'" style="padding-top:25px;background-color:rgb(245,245,245);padding:10px 0;height:60px;">
+                    <font color='blue'>{{data.day}}</font><br>
+                    <el-button type="primary" @click="goSetting(data.day)"  size="mini" 
+                    style="padding:3px 10px;margin : 25px 2px 5px 100px;">
+                      <!-- <i class="el-icon-edit" ></i> -->
+                      设置
+                      </el-button>
                 </div>
-                <div
-                  v-else
-                  style="background-color:rgb(192,196,204);height:70px;width100%;"
-                ></div>
+                <!-- rgb(192,196,204) -->
+                <!-- <div v-else style="background-color:white;height:60px;width100%;"> -->
+                <!-- </div> -->
               </div>
             </template>
           </el-calendar>

@@ -126,7 +126,7 @@
 
                     <!-- 编辑标签弹层 -->
                     <div class="add-form">
-                        <el-dialog title="编辑检查组" :visible.sync="dialogFormVisible4Edit">
+                        <el-dialog title="编辑菜单" :visible.sync="dialogFormVisible4Edit">
                             <template>
                                 <el-tabs v-model="activeName" type="card">
                                     <el-tab-pane label="基本信息" name="first">
