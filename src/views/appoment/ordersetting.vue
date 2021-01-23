@@ -19,7 +19,9 @@
               <el-button
                 style="margin-bottom: 20px; margin-right: 20px"
                 type="primary"
+                icon="el-icon-download"
                 @click="downloadTemplate"
+                round
                 >模板下载</el-button
               >
               <el-upload
@@ -29,7 +31,7 @@
                 :on-success="handleSuccess"
                 :show-file-list="false"
               >
-                <el-button type="primary">上传文件</el-button>
+                <el-button type="primary" icon="el-icon-upload2" round>上传文件</el-button>
               </el-upload>
             </div>
             <div>
@@ -46,7 +48,7 @@
                     settingData[data.day].number ==
                     settingData[data.day].reservations
                   "
-                  style="background-color: red; height: 85px"
+                  style="background-color: red; height: 100%"
                 >
                   <div>
                     <font color="blue">{{ data.day }}</font>
@@ -58,7 +60,7 @@
                   </div>
                   <div>已满</div>
                 </div>
-                <div v-else style="background-color: lightblue; height: 85px">
+                <div v-else style="background-color: lightblue; height: 100%">
                   <div>
                     <font color="blue">{{ data.day }}</font>
                   </div>
@@ -86,7 +88,7 @@
                 </div>
                 <div
                   v-else
-                  style="background-color:rgb(192,196,204);height:85px;width100%;"
+                  style="background-color:rgb(192,196,204);height:70px;width100%;"
                 ></div>
               </div>
             </template>

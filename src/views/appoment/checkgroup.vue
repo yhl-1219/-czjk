@@ -12,8 +12,9 @@
                 <div class="box">
                     <div class="filter-container">
                         <el-input placeholder="编码/名称/助记码" v-model="pagination.queryString" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"></el-input>
-                        <el-button @click="findPageByCondition" class="dalfBut">查询</el-button>
-                        <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                        &nbsp;&nbsp;
+                        <el-button @click="findPageByCondition" class="dalfBut" icon="el-icon-search" round></el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate" icon="el-icon-circle-plus-outline" round></el-button>
                     </div>
                     <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                         <el-table-column type="index" align="center" label="序号"></el-table-column>
@@ -28,8 +29,8 @@
                         <el-table-column prop="remark" label="说明" align="center"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
-                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                                <el-button type="primary" class="el-icon-edit" size="mini" @click="handleUpdate(scope.row)" round></el-button>
+                                <el-button size="mini" type="danger" class="el-icon-delete" @click="handleDelete(scope.row)" round></el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -121,8 +122,8 @@
                                 </el-tabs>
                             </template>
                             <div slot="footer" class="dialog-footer">
-                                <el-button @click="dialogFormVisible = false">取消</el-button>
-                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                                <el-button @click="dialogFormVisible = false" icon="el-icon-error" round></el-button>
+                                <el-button type="primary" @click="handleAdd" icon="el-icon-success" round></el-button>
                             </div>
                         </el-dialog>
                     </div>
@@ -205,8 +206,8 @@
                                 </el-tabs>
                             </template>
                             <div slot="footer" class="dialog-footer">
-                                <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
-                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                                <el-button @click="dialogFormVisible4Edit = false" icon="el-icon-error" round></el-button>
+                                <el-button type="primary" @click="handleEdit" icon="el-icon-success" round></el-button>
                             </div>
                         </el-dialog>
                     </div>

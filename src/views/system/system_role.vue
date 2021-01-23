@@ -12,8 +12,9 @@
                 <div class="box">
                     <div class="filter-container">
                         <el-input placeholder="角色名/关键字" v-model="pagination.queryString" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"></el-input>
-                        <el-button @click="findPageByCondition" class="dalfBut">查询</el-button>
-                        <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                        &nbsp;&nbsp;
+                        <el-button @click="findPageByCondition" class="dalfBut" icon="el-icon-search" round></el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate" icon="el-icon-circle-plus-outline" round></el-button>
                     </div>
                     <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                         <el-table-column type="index" align="center" label="序号"></el-table-column>
@@ -21,8 +22,8 @@
                         <el-table-column prop="keyword" label="关键字" align="center"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
-                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                                <el-button type="primary" class="el-icon-edit" size="mini" @click="handleUpdate(scope.row)" round></el-button>
+                                <el-button size="mini" type="danger" class="el-icon-delete" @click="handleDelete(scope.row)" round></el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -90,11 +91,35 @@
                                         </table>
 									</div>
                                     </el-tab-pane>
+                                    <el-tab-pane label="菜单信息" name="third">
+										<div class="checkScrol">
+											<table class="datatable">
+												<thead>
+													<tr>
+                                                <th>选择</th>
+                                                <th>菜单名称</th>
+                                                <th>菜单关键字</th>
+                                                <th>菜单说明</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="c in menuTableData" v-bind:key="c">
+                                                        <td>
+                                                            <input :id="c.id" v-model="menuIds" type="checkbox" :value="c.id">
+                                                        </td>
+                                                        <td><label :for="c.id">{{c.name}}</label></td>
+                                                        <td><label :for="c.id">{{c.linkUrl}}</label></td>
+                                                        <td><label :for="c.id">{{c.description}}</label></td>
+                                                    </tr>
+												</tbody>
+											</table>
+										</div>
+                                    </el-tab-pane>
                                 </el-tabs>
                             </template>
                             <div slot="footer" class="dialog-footer">
-                                <el-button @click="dialogFormVisible = false">取消</el-button>
-                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                                <el-button @click="dialogFormVisible = false" icon="el-icon-error" round></el-button>
+                                <el-button type="primary" @click="handleAdd" icon="el-icon-success" round></el-button>
                             </div>
                         </el-dialog>
                     </div>
@@ -153,11 +178,35 @@
 											</table>
 										</div>
                                     </el-tab-pane>
+                                    <el-tab-pane label="菜单信息" name="third">
+										<div class="checkScrol">
+											<table class="datatable">
+												<thead>
+													<tr>
+                                                <th>选择</th>
+                                                <th>菜单名称</th>
+                                                <th>菜单关键字</th>
+                                                <th>菜单说明</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="c in menuTableData" v-bind:key="c">
+                                                        <td>
+                                                            <input :id="c.id" v-model="menuIds" type="checkbox" :value="c.id">
+                                                        </td>
+                                                        <td><label :for="c.id">{{c.name}}</label></td>
+                                                        <td><label :for="c.id">{{c.linkUrl}}</label></td>
+                                                        <td><label :for="c.id">{{c.description}}</label></td>
+                                                    </tr>
+												</tbody>
+											</table>
+										</div>
+                                    </el-tab-pane>
                                 </el-tabs>
                             </template>
                             <div slot="footer" class="dialog-footer">
-                                <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
-                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                                <el-button @click="dialogFormVisible4Edit = false" icon="el-icon-error" round></el-button>
+                                <el-button type="primary" @click="handleEdit" icon="el-icon-success" round></el-button>
                             </div>
                         </el-dialog>
                     </div>
@@ -180,7 +229,9 @@ export default {
                 dataList: [],//列表数据
                 formData: {},//表单数据
                 tableData:[],//新增和编辑表单中对应的权限列表数据
+                menuTableData:[],
                 permissionIds:[],//新增和编辑表单中权限对应的复选框，基于双向绑定可以进行回显和数据提交
+                menuIds:[],
                 dialogFormVisible: false,//控制添加窗口显示/隐藏
                 dialogFormVisible4Edit:false,//控制编辑窗口显示/隐藏
                 rules: {//校验规则
@@ -209,6 +260,7 @@ export default {
                 //弹出添加窗口
                 handleCreate() {
                     this.permissionIds = [];
+                    this.menuIds = [],
                     this.restform();
                     this.dialogFormVisible = true;
                     this.activeName='first';
@@ -218,7 +270,14 @@ export default {
                         } else {
                             this.$message.error(res.data.message);
                         }
-                    })
+                    });
+                    this.$http.get("api/role/findAllMenu").then(res=>{
+                        if(res.data.flag) {
+                            this.menuTableData = res.data.data;
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    });
                 },
                 //重置表单
                 restform() {
@@ -291,9 +350,23 @@ export default {
                             this.$message.error(res.data.message);
                         }
                     });
+                    this.$http.get("api/role/findAllMenu").then(res=>{
+                        if(res.data.flag) {
+                            this.menuTableData = res.data.data;
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    });
                     this.$http.post("api/role/findPermissionInfoById/" + row.id).then(res=>{
                         if(res.data.flag){
                             this.permissionIds = res.data.data;
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    });
+                    this.$http.post("api/role/findMenuInfoById/" + row.id).then(res=>{
+                        if(res.data.flag){
+                            this.menuIds = res.data.data;
                         } else {
                             this.$message.error(res.data.message);
                         }
@@ -305,6 +378,7 @@ export default {
                         if (valid) {
                             this.dialogFormVisible4Edit = false;
                             this.formData.permissionIds = this.permissionIds;
+                            this.formData.menuIds = this.menuIds;
                             this.$http.post("api/role/add",this.formData).then(res => {
                                 if(res.data.flag) {
                                     this.findPage();

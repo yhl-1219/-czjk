@@ -60,10 +60,12 @@
                             <td>占比</td>
                             <td>备注</td>
                         </tr>
-                        <tr v-for="s in reportData.hotSetmeal">
+                        <tr v-for="(s,index) in reportData.hotSetmeal">
                             <td>{{s.name}}</td>
                             <td>{{s.setmeal_count}}</td>
-                            <td>{{s.proportion}}</td>
+                            <td>
+                               <el-progress :percentage="checkoutIndex(index)" :text-inside="false" :stroke-width="15" :color="customColors"></el-progress>
+                            </td>
                             <td>{{s.remark}}</td>
                             <td></td>
                         </tr>
@@ -77,7 +79,15 @@
 export default {
   data() {
     return {
-         reportData:{
+        customColor: '#409eff',
+        customColors: [
+          {color: '#f56c6c', percentage: 20},
+          {color: '#e6a23c', percentage: 40},
+          {color: '#5cb87a', percentage: 60},
+          {color: '#1989fa', percentage: 80},
+          {color: '#6f7ad3', percentage: 100}
+        ],
+        reportData:{
                     reportDate:null,//报告日期
                     todayNewMember :0,//今日新增会员数
                     totalMember :0,//总会员数
@@ -91,10 +101,40 @@ export default {
                     thisMonthVisitsNumber :0,//本月到诊数
                     hotSetmeal :[]
                 }
+                 
     }
   },
-  mounted: function () {
-  
-  }
+    created() {
+            this.findDataNumber();
+            },
+     methods:{
+            findDataNumber () {
+            //   运营数据统计报表
+                this.$http.post("api/reportBusiness/findReportBusinessData").then((res)=>{
+                if(res.data.flag){
+                    this.reportData = res.data.data
+                }else{
+                    this.$message.error(res.data.message)
+                }
+            })},
+            customColorMethod(percentage) {
+                if (percentage < 30) {
+                return '#909399';
+                } else if (percentage < 70) {
+                return '#e6a23c';
+                } else {
+                return '#67c23a';
+                }
+            },
+            exportExcel(){
+            window.location.href = 'api/reportBusiness/exportBusinessReport';    
+            },
+             //生成Excel报表并导出
+             checkoutIndex(index) {
+                let var1 = this.reportData.hotSetmeal[index].proportion;
+                let var2 = var1.split("%")[0];
+                return Number(var2);
+             }
+    }
 };
 </script>

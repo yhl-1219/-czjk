@@ -16,22 +16,20 @@
                     value-format="yyyy-MM-dd"
                     type="datetimerange"
                     :picker-options="pickerOptions"
-                    :default-time="['2020-01-01 00:00:00','2021-01-01 00:00:00']"
+                    :default-time="[]"
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                     @change="findCount"
                     align="right">
-                    </el-date-picker>
+                    </el-date-picker>&nbsp;&nbsp;
                     <span class="demonstration">筛选条件</span>
-                    <el-select @change="findCount" v-model="condition.type" placeholder="请选择">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
+                        <el-radio-group v-model="condition.type" @change="findCount">
+                          <el-radio-button label="0">按年显示</el-radio-button>
+                          <el-radio-button label="1">按月显示</el-radio-button>
+                          <el-radio-button label="2">按周显示</el-radio-button>
+                          <el-radio-button label="3">按日显示</el-radio-button>
+                        </el-radio-group>
                 </div>
 
             </div>
@@ -94,6 +92,24 @@ export default {
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
               picker.$emit('pick', [start, end]);
             }
+          }, {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '2019年',
+            onClick(picker) {
+              picker.$emit('pick', ["2019-01-01", "2020-01-01"]);
+            }
+          }, {
+            text: '2018年',
+            onClick(picker) {
+              picker.$emit('pick', ["2018-01-01", "2019-01-01"]);
+            }
           }]
         },
         value2: ['2020-01-01','2021-01-01'],
@@ -134,7 +150,16 @@ export default {
                             series: [{
                                 data: this.dataList.member,
                                 name:'会员数量',
-                                type: 'line'
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#8A2BE2',
+                                    width: 2
+                                },
+                                itemStyle: {
+                                    borderWidth: 4,
+                                    borderColor: '#8A2BE2',
+                                    color: 'yellow'
+                                }
                             }]
                         });
                         } else {

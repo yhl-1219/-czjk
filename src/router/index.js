@@ -67,6 +67,16 @@ const routes = [
         path: '/system_user',
         name: 'system_user',
         component: () => import('../views/system/system_user.vue')
+      },
+      {
+        path: '/report_setmeal_age',
+        name: 'report_setmeal_age',
+        component: () => import('../views/report/report_setmeal_age.vue')
+      },
+      {
+        path: '/report_setmeal_sex',
+        name: 'report_setmeal_sex',
+        component: () => import('../views/report/report_setmeal_sex.vue')
       }
     ]
   }
